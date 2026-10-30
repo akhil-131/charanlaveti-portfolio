@@ -1,0 +1,257 @@
+/* ==========================================================================
+   CONTACT SECTION
+   ========================================================================== */
+.contact-section {
+  padding: 80px 0;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.contact-card {
+  padding: 32px 28px;
+  border-radius: var(--r-xl);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s var(--ease-out);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.contact-card:hover {
+  transform: translateY(-5px);
+  background: var(--bg-card-h);
+}
+.contact-card--wa:hover {
+  border-color: rgba(37, 211, 102, 0.45);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(37, 211, 102, 0.16);
+}
+.contact-card--ig:hover {
+  border-color: rgba(225, 48, 108, 0.45);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(225, 48, 108, 0.16);
+}
+.contact-card--email:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(56, 189, 248, 0.16);
+}
+
+.contact-card-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+.contact-card:hover .contact-card-icon {
+  transform: scale(1.08);
+}
+.contact-card--wa .contact-card-icon {
+  background: rgba(37, 211, 102, 0.12);
+  color: var(--wa-color);
+  border: 1px solid rgba(37, 211, 102, 0.22);
+}
+.contact-card--ig .contact-card-icon {
+  background: rgba(225, 48, 108, 0.12);
+  color: var(--ig-color);
+  border: 1px solid rgba(225, 48, 108, 0.22);
+}
+.contact-card--email .contact-card-icon {
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--em-color);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+}
+
+.contact-card-body {
+  flex: 1;
+}
+.contact-card-body h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 5px;
+}
+.contact-card-body p {
+  font-size: 0.88rem;
+  color: var(--text-2);
+}
+
+.contact-card-arrow {
+  color: var(--gold);
+  flex-shrink: 0;
+  transition: transform 0.25s;
+}
+.contact-card:hover .contact-card-arrow {
+  transform: translateX(5px);
+  color: var(--gold-bright);
+}
+
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION (BOTTOM SCREEN GOLD-ON-DARK THEME)
+   ========================================================================== */
+#toastNotification,
+.toast-notification {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(24px);
+  z-index: 10000;
+  background: #181209;
+  border: 1px solid var(--gold-border);
+  color: var(--gold-bright);
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8), 0 0 24px rgba(232, 201, 125, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  max-width: 90vw;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#toastNotification.show,
+.toast-notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 600px) {
+  #toastNotification,
+  .toast-notification {
+    bottom: 84px; /* safe clearance above floating quick dock */
+    white-space: normal;
+    width: calc(100% - 32px);
+    font-size: 0.85rem;
+    padding: 10px 16px;
+  }
+}
+
+/* ==========================================================================
+   ULTRA-SLIM 3-COLUMN LUXURY FOOTER
+   ========================================================================== */
+.site-footer {
+  padding: 18px 0;
+  background: var(--bg-deep, #0a0703);
+  border-top: 1px solid rgba(232, 201, 125, 0.12);
+  width: 100%;
+}
+
+/* STRICT LINK OVERRIDES TO ELIMINATE DEFAULT BROWSER BLUE / PURPLE */
+.site-footer a,
+.site-footer a:link,
+.site-footer a:visited,
+.site-footer a:active {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Force horizontal 3-column flex bar */
+.site-footer .footer-bar {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* LEFT COLUMN */
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.footer-logo {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 1.4rem;
+  color: #f7f2e7;
+  line-height: 1;
+}
+
+.footer-logo .gold-dot {
+  color: var(--gold, #e8c97d);
+}
+
+.footer-copy {
+  font-size: 0.78rem;
+  color: #736957;
+  margin-top: 4px;
+}
+
+/* CENTER COLUMN */
+.footer-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b0a48e;
+  font-size: 0.8rem;
+  font-family: var(--font-mono, monospace);
+  text-align: center;
+}
+
+.f-sep {
+  color: var(--gold, #e8c97d);
+  opacity: 0.6;
+}
+
+/* RIGHT COLUMN */
+.footer-right {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.82rem;
+  color: #b0a48e;
+  text-align: right;
+}
+
+.dev-credit-link {
+  color: var(--gold, #e8c97d) !important;
+  font-weight: 700;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+}
+
+.dev-credit-link:hover {
+  color: #f7df9c !important;
+  text-shadow: 0 0 8px rgba(232, 201, 125, 0.5);
+  text-decoration: underline !important;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 16px 0 84px; /* safe clearance above mobile floating quick dock */
+  }
+  .site-footer .footer-bar {
+    flex-direction: column !important;
+    text-align: center;
+    gap: 14px;
+  }
+  .footer-left,
+  .footer-right {
+    align-items: center;
+    text-align: center;
+  }
+}

@@ -1,0 +1,88 @@
+.cursor-glow {
+  position: fixed;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(232, 201, 125, 0.15) 0%,
+    rgba(196, 152, 60, 0.06) 38%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.4s, width 0.35s var(--ease-out), height 0.35s var(--ease-out);
+  will-change: left, top;
+}
+
+.cursor-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99996;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  box-shadow: 0 0 12px var(--gold), 0 0 24px rgba(232, 201, 125, 0.7);
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s var(--ease-out), height 0.2s var(--ease-out), background 0.2s, opacity 0.3s;
+  will-change: left, top;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(232, 201, 125, 0.6);
+  background: radial-gradient(circle, rgba(232, 201, 125, 0.08) 0%, transparent 70%);
+  box-shadow: 0 0 18px rgba(232, 201, 125, 0.2), inset 0 0 10px rgba(232, 201, 125, 0.1);
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.28s var(--ease-out),
+    height 0.28s var(--ease-out),
+    border-color 0.28s var(--ease-out),
+    background 0.28s var(--ease-out),
+    box-shadow 0.28s var(--ease-out),
+    opacity 0.3s;
+  will-change: left, top;
+}
+
+.cursor-ring.is-hovering {
+  width: 56px;
+  height: 56px;
+  border-color: var(--gold-bright);
+  background: radial-gradient(circle, rgba(232, 201, 125, 0.20) 0%, rgba(196, 152, 60, 0.05) 70%);
+  box-shadow: 0 0 28px rgba(232, 201, 125, 0.45), inset 0 0 14px rgba(232, 201, 125, 0.22);
+}
+
+.cursor-dot.is-hovering {
+  width: 11px;
+  height: 11px;
+  background: #ffffff;
+  box-shadow: 0 0 16px var(--gold-bright), 0 0 32px var(--gold);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring,
+  .cursor-glow {
+    display: none;
+  }
+}

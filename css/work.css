@@ -1,0 +1,571 @@
+/* ==========================================================================
+   WORK & PORTFOLIO SHOWCASE SECTION
+   - True Circular Queue (Infinite Loop) Carousels:
+     * Shorts / Reels (9:16): Exactly 3 items visible on desktop (1024px+)
+                              Exactly 2 items visible on tablet (641px - 1023px)
+                              Exactly 1 item visible on mobile (<= 640px)
+     * Long Form (16:9): Exactly 1 item visible at all viewports
+   - Hardware-Accelerated 3D Transform Carousel Engine
+   - Click-to-Play Instant Embeds (YouTube 16:9 & Instagram 9:16)
+   - Sleek 24K Gold-Bordered Navigation Arrows, Dots, and Counters
+   ========================================================================== */
+
+.work-section {
+  padding: 100px 0;
+  position: relative;
+}
+
+/* Filter Tabs */
+.work-filter-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.filter-tab {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  padding: 9px 22px;
+  border-radius: 100px;
+  background: rgba(232, 201, 125, 0.05);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+}
+
+.filter-tab:hover,
+.filter-tab.active {
+  background: var(--gold-dim);
+  color: var(--gold-bright);
+  border-color: var(--gold);
+  box-shadow: 0 0 18px rgba(232, 201, 125, 0.18);
+  transform: translateY(-1px);
+}
+
+/* Work Group Header with Counter */
+.work-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.work-group-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.carousel-counter {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  color: var(--gold-bright);
+  background: rgba(232, 201, 125, 0.08);
+  border: 1px solid var(--gold-border);
+  padding: 4px 14px;
+  border-radius: 100px;
+}
+
+/* ==========================================================================
+   CAROUSEL WRAPPER, VIEWPORT & CIRCULAR TRACK
+   ========================================================================== */
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.carousel-viewport {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--r-xl);
+  padding: 10px 0 16px;
+  touch-action: pan-y;
+}
+
+.carousel-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.carousel-track {
+  display: flex;
+  gap: var(--gap, 24px);
+  width: max-content;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.carousel-viewport.is-dragging .carousel-track {
+  cursor: grabbing;
+}
+
+/* ==========================================================================
+   CAROUSEL CARDS
+   ========================================================================== */
+.carousel-card {
+  flex: 0 0 var(--card-width, 320px);
+  width: var(--card-width, 320px);
+  max-width: var(--card-width, 320px);
+  box-sizing: border-box;
+  border-radius: var(--r-xl);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-card, 0 10px 30px rgba(0, 0, 0, 0.5));
+  transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  display: flex;
+  flex-direction: column;
+}
+
+.carousel-card:hover {
+  border-color: var(--gold-border);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(232, 201, 125, 0.12);
+  transform: translateY(-4px);
+}
+
+/* Long Form Carousel Constrained Container */
+.long-carousel {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   VIDEO MEDIA & CLICK-TO-PLAY EMBED
+   ========================================================================== */
+.video-media {
+  position: relative;
+  width: 100%;
+  background: #080603;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+/* 9:16 Aspect Ratio for Shorts / Reels */
+.reel-card .video-media {
+  aspect-ratio: 9 / 16;
+}
+
+/* 16:9 Aspect Ratio for Long Form */
+.long-card .video-media {
+  aspect-ratio: 16 / 9;
+}
+
+/* High-Quality Thumbnail Poster Layer */
+.video-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  cursor: pointer;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.video-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.carousel-card:hover .video-thumb {
+  transform: scale(1.04);
+}
+
+/* Poster Overlay & Scrim */
+.poster-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 6, 3, 0.35) 0%, rgba(8, 6, 3, 0.15) 45%, rgba(8, 6, 3, 0.88) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: background 0.3s ease;
+}
+
+.poster-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(14, 11, 6, 0.85);
+  border: 1px solid var(--gold-border);
+  color: var(--gold-bright);
+  backdrop-filter: blur(8px);
+}
+
+.poster-hint {
+  position: absolute;
+  bottom: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--text-2);
+  text-transform: uppercase;
+  opacity: 0.85;
+  transition: color 0.25s, opacity 0.25s;
+}
+
+.carousel-card:hover .poster-hint {
+  color: var(--gold-bright);
+  opacity: 1;
+}
+
+/* Play Button */
+.reel-play-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff5d7 0%, #e8c97d 60%, #c4983c 100%);
+  border: none;
+  color: #0c0904;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 24px rgba(232, 201, 125, 0.45), 0 0 12px rgba(232, 201, 125, 0.25);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+
+.reel-play-btn svg {
+  margin-left: 2px;
+  fill: #0c0904;
+}
+
+.reel-play-btn--lg {
+  width: 66px;
+  height: 66px;
+}
+
+.carousel-card:hover .reel-play-btn {
+  transform: scale(1.12);
+  box-shadow: 0 8px 36px rgba(232, 201, 125, 0.65), 0 0 20px rgba(232, 201, 125, 0.35);
+}
+
+/* Video Player Slot */
+.video-player-slot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  background: #000;
+  transition: opacity 0.3s ease;
+}
+
+.video-player-slot iframe,
+.video-player-slot video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Playing State: Swap instantly to the player slot */
+.video-media.is-playing .video-player-slot {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.video-media.is-playing .video-poster {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* ==========================================================================
+   METADATA & CONTENT TYPOGRAPHY
+   ========================================================================== */
+.reel-info {
+  padding: 20px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.reel-meta-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reel-category {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.reel-ext-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(232, 201, 125, 0.05);
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.reel-ext-btn:hover {
+  color: var(--gold-bright);
+  border-color: var(--gold);
+  transform: scale(1.1);
+}
+
+.reel-title {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  letter-spacing: 0.02em;
+  color: var(--text-1);
+  line-height: 1.2;
+}
+
+.reel-desc {
+  font-size: 0.92rem;
+  color: var(--text-2);
+  line-height: 1.55;
+  margin-bottom: 6px;
+  flex: 1;
+}
+
+.reel-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: auto;
+}
+
+.reel-tags .tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(232, 201, 125, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+}
+
+/* Long Form Card Info */
+.long-info {
+  padding: 26px 32px;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.long-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.long-title {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  letter-spacing: 0.02em;
+  color: var(--text-1);
+  line-height: 1.2;
+}
+
+.long-desc {
+  font-size: 0.96rem;
+  color: var(--text-2);
+  line-height: 1.6;
+  max-width: 640px;
+  margin-bottom: 6px;
+}
+
+.long-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.btn-yt-watch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 100px;
+  background: rgba(255, 0, 0, 0.08);
+  border: 1px solid rgba(255, 0, 0, 0.25);
+  color: #ff6b6b;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.25s;
+}
+
+.btn-yt-watch:hover {
+  background: rgba(255, 0, 0, 0.16);
+  border-color: #ff4d4d;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   MINIMAL 24K GOLD-BORDERED NAVIGATION ARROWS
+   ========================================================================== */
+.carousel-arrow {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(18, 14, 8, 0.92);
+  border: 1.5px solid var(--gold-border);
+  color: var(--gold-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.65), 0 0 12px rgba(232, 201, 125, 0.1);
+  transition: all 0.25s var(--ease-out);
+  flex-shrink: 0;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.carousel-arrow:hover {
+  background: var(--gold);
+  color: #0c0904;
+  border-color: var(--gold-bright);
+  transform: scale(1.08);
+  box-shadow: 0 6px 26px rgba(232, 201, 125, 0.45);
+}
+
+.carousel-arrow:active {
+  transform: scale(0.96);
+}
+
+/* Footer: Dots & Hint */
+.carousel-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.carousel-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.carousel-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(232, 201, 125, 0.2);
+  border: 1px solid var(--gold-border);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s var(--ease-out);
+}
+
+.carousel-dot:hover {
+  background: rgba(232, 201, 125, 0.5);
+  transform: scale(1.2);
+}
+
+.carousel-dot.active {
+  width: 28px;
+  border-radius: 100px;
+  background: var(--gold);
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 10px rgba(232, 201, 125, 0.45);
+}
+
+.carousel-hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--text-2);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================================================== */
+@media (max-width: 768px) {
+  .carousel-wrapper {
+    position: relative;
+    padding: 0;
+  }
+  .carousel-arrow {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    z-index: 20;
+    background: rgba(14, 11, 6, 0.9);
+  }
+  .carousel-arrow-prev {
+    left: 8px;
+  }
+  .carousel-arrow-next {
+    right: 8px;
+  }
+  .long-info {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px 24px;
+  }
+  .long-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .reel-title {
+    font-size: 1.25rem;
+  }
+  .long-title {
+    font-size: 1.35rem;
+  }
+}
