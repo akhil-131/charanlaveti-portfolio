@@ -1,9 +1,10 @@
 /* ==========================================================================
-   MODULAR SECTION LOADER (VS CODE LIVE SERVER OPTIMIZED)
+   MODULAR SECTION LOADER (VS CODE LIVE SERVER & HARD RELOAD OPTIMIZED)
    - Resolves all section paths relative to window.location.href
    - Strips Live Server injected scripts using DOMParser
-   - Sequentially awaits all HTML section injections in order
-   - Initializes all interactive modules and dispatches portfolio:ready hook
+   - Fetches sections concurrently via Promise.all to eliminate network delays
+   - Batches DOM injections & module inits inside requestAnimationFrame (60/120fps)
+   - Synchronizes hero entrance reveal smoothly as preloader curtain lifts (3.0s)
    ========================================================================== */
 
 function sanitizeFetchedHtml(rawHtml) {
@@ -41,44 +42,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     { id: 'contact-footer-slot', file: 'sections/contact-footer.html' }
   ];
 
-  // Await each section injection sequentially in exact order
-  for (const { id, file } of sections) {
-    const slot = document.getElementById(id);
-    if (!slot) continue;
-
-    try {
-      const resolvedUrl = new URL(file, window.location.href).href;
-      const response = await fetch(resolvedUrl, { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status} ${response.statusText}`);
+  // Concurrently fetch all sections for zero-latency network delivery on hard reload
+  const fetched = await Promise.all(
+    sections.map(async ({ id, file }) => {
+      try {
+        const resolvedUrl = new URL(file, window.location.href).href;
+        const response = await fetch(resolvedUrl, { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} ${response.statusText}`);
+        }
+        const rawText = await response.text();
+        return { id, html: sanitizeFetchedHtml(rawText) };
+      } catch (err) {
+        console.error(`[Loader] Failed to load section "${file}":`, err);
+        return { id, html: '' };
       }
-      const rawText = await response.text();
-      const cleanedHtml = sanitizeFetchedHtml(rawText);
-      slot.outerHTML = cleanedHtml;
-    } catch (err) {
-      console.error(`[Loader] Failed to load section "${file}":`, err);
+    })
+  );
+
+  // Batch DOM injections inside a single requestAnimationFrame to eliminate layout thrashing
+  requestAnimationFrame(() => {
+    for (const { id, html } of fetched) {
+      if (!html) continue;
+      const slot = document.getElementById(id);
+      if (slot) slot.outerHTML = html;
     }
-  }
 
-  // Initialize interactive modules only after all section DOM elements exist
-  if (typeof window.initAnimations === 'function') {
-    try { window.initAnimations(); } catch (e) { console.error('[Loader] initAnimations error:', e); }
-  }
-  if (typeof window.initWork === 'function') {
-    try { window.initWork(); } catch (e) { console.error('[Loader] initWork error:', e); }
-  }
-  if (typeof window.initNavAndDock === 'function') {
-    try { window.initNavAndDock(); } catch (e) { console.error('[Loader] initNavAndDock error:', e); }
-  }
-  if (typeof window.initContact === 'function') {
-    try { window.initContact(); } catch (e) { console.error('[Loader] initContact error:', e); }
-  }
+    // Schedule interactive module inits on the subsequent animation frame
+    requestAnimationFrame(() => {
+      if (typeof window.initAnimations === 'function') {
+        try { window.initAnimations(); } catch (e) { console.error('[Loader] initAnimations error:', e); }
+      }
+      if (typeof window.initWork === 'function') {
+        try { window.initWork(); } catch (e) { console.error('[Loader] initWork error:', e); }
+      }
+      if (typeof window.initNavAndDock === 'function') {
+        try { window.initNavAndDock(); } catch (e) { console.error('[Loader] initNavAndDock error:', e); }
+      }
+      if (typeof window.initContact === 'function') {
+        try { window.initContact(); } catch (e) { console.error('[Loader] initContact error:', e); }
+      }
 
-  // Safety guarantee: Reveal all elements with [data-reveal]
-  setTimeout(() => {
-    document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('revealed'));
-  }, 500);
+      // Smooth entrance synchronizer: Reveal hero elements as preloader curtain lifts (3.0s)
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          document.querySelectorAll('.hero-section [data-reveal]').forEach(el => el.classList.add('revealed'));
+        });
+      }, 3000);
 
-  // Dispatch portfolio:ready custom event hook
-  window.dispatchEvent(new CustomEvent('portfolio:ready'));
+      // Safety fallback: ensure any off-screen or unobserved reveal elements are visible
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('revealed'));
+        });
+      }, 3400);
+
+      // Dispatch portfolio:ready custom event hook
+      window.dispatchEvent(new CustomEvent('portfolio:ready'));
+    });
+  });
 });

@@ -4,6 +4,23 @@
   text-align: center;
 }
 
+/* GPU Hardware Acceleration for Entrance Performance (60/120fps) */
+.hero-headline,
+.hero-name,
+.hero-name-primary,
+.hero-name-surname,
+.hero-role,
+.status-badge,
+.hero-eyebrow,
+.hero-credit,
+.waveform,
+.hero-tagline,
+.hero-actions {
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
 .hero-eyebrow {
   display: flex;
   align-items: center;
@@ -102,15 +119,16 @@
   height: 100%;
 }
 .waveform rect {
-  animation: waveBar 1.6s ease-in-out infinite alternate;
+  animation: waveBar 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite alternate;
   transform-origin: center bottom;
+  will-change: transform;
 }
 .waveform rect:nth-child(odd)  { animation-delay: calc(var(--i, 0) * 0.04s); }
 .waveform rect:nth-child(even) { animation-delay: calc(var(--i, 0) * 0.04s + 0.1s); }
 
 @keyframes waveBar {
-  0%   { transform: scaleY(0.55); }
-  100% { transform: scaleY(1); }
+  0%   { transform: scaleY(0.55) translateZ(0); }
+  100% { transform: scaleY(1) translateZ(0); }
 }
 
 .hero-tagline {

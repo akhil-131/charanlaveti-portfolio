@@ -69,6 +69,8 @@ body {
   pointer-events: none;
   z-index: 99995;
   opacity: 1;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .film-grain::before {
   content: '';
@@ -80,6 +82,9 @@ body {
   background-size: 256px 256px;
   opacity: 0.026;
   animation: grain 0.45s steps(2) infinite;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 @keyframes grain {
   0%, 100% { transform: translate(0, 0); }
@@ -93,24 +98,29 @@ body {
   position: fixed;
   top: -200px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateZ(0);
   width: 960px;
   height: 580px;
   background: radial-gradient(ellipse, rgba(232, 201, 125, 0.13) 0%, rgba(196, 152, 60, 0.04) 45%, transparent 72%);
   filter: blur(95px);
   pointer-events: none;
   z-index: -1;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .bg-glow-2 {
   position: fixed;
   bottom: -180px;
   right: -100px;
+  transform: translateZ(0);
   width: 700px;
   height: 700px;
   background: radial-gradient(circle, rgba(232, 201, 125, 0.10) 0%, rgba(196, 152, 60, 0.04) 50%, transparent 72%);
   filter: blur(105px);
   pointer-events: none;
   z-index: -1;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -118,15 +128,26 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-/* Visible by default so text is never missing */
+/* GPU-Accelerated Reveal & Entrance System: Eliminates FOUC & Jitter */
 [data-reveal] {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
+
 [data-reveal].revealed {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 .container {

@@ -6,9 +6,17 @@ window.initAnimations = function () {
       if (!entry.isIntersecting) return;
       const el = entry.target;
       const delay = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
-      setTimeout(() => {
-        el.classList.add('revealed');
-      }, delay);
+      if (delay > 0) {
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            el.classList.add('revealed');
+          });
+        }, delay);
+      } else {
+        requestAnimationFrame(() => {
+          el.classList.add('revealed');
+        });
+      }
       revealObserver.unobserve(el);
     });
   }, { threshold: 0.12 });
@@ -46,7 +54,9 @@ window.initAnimations = function () {
     const statsObserver = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !countersStarted) {
         countersStarted = true;
-        statNumbers.forEach(el => runCounter(el));
+        requestAnimationFrame(() => {
+          statNumbers.forEach(el => runCounter(el));
+        });
       }
     }, { threshold: 0.2 });
     statsObserver.observe(statsSection);
